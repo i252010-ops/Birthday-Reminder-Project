@@ -1,70 +1,110 @@
-# 🎂 Birthday Reminder Project
+# Birthday Reminder Project  
 
-[![GitHub stars](https://img.shields.io/github/stars/i252010-ops/Birthday-Reminder-Project?style=flat-square)](https://github.com/i252010-ops/Birthday-Reminder-Project/stargazers) 
-[![GitHub license](https://img.shields.io/badge/license-None-lightgrey?style=flat-square)](https://github.com/i252010-ops/Birthday-Reminder-Project) 
-[![Python](https://img.shields.io/badge/language-Python-blue?style=flat-square)](https://www.python.org/)
+![GitHub stars](https://img.shields.io/github/stars/i252010-ops/Birthday-Reminder-Project?style=flat) ![GitHub forks](https://img.shields.io/github/forks/i252010-ops/Birthday-Reminder-Project?style=flat) ![Python](https://img.shields.io/badge/language-Python-blue?style=flat)  
 
-A simple Python utility that automatically tracks upcoming birthdays and sends reminders so you never miss a special day.
+A simple, cross‑platform Python utility that tracks birthdays and sends timely reminders (via email or console) so you never miss a special day again.
 
----
+---  
 
-## ✨ Features
+## Features  
 
-- **Add / edit birthdays** – Store names and dates in a lightweight JSON file.  
-- **Upcoming reminders** – List birthdays occurring within the next N days.  
-- **Customizable output** – Print to console, generate a CSV, or hook into email/SMS APIs (extendable).  
-- **Zero‑dependency core** – Pure Python standard library, easy to integrate into other projects.  
-- **Cross‑platform** – Works on Windows, macOS, and Linux.
+- **Add / edit / delete** birthdays via a friendly CLI.  
+- Store data in a lightweight **SQLite** database (no external DB required).  
+- Configurable reminder **lead time** (e.g., 1 day, 1 hour).  
+- **Email notifications** using SMTP (supports Gmail, Outlook, custom servers).  
+- **Daily scheduler** that runs in the background (systemd service, cron, or Windows Task Scheduler).  
+- Export / import birthdays in **CSV** format for easy backup.  
+- Fully typed code with **type hints** and **PEP 8** compliance.  
 
----
+---  
 
-## 🛠️ Installation / Clone
+## Installation  
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/i252010-ops/Birthday-Reminder-Project.git
 cd Birthday-Reminder-Project
 
-# (Optional) Create a virtual environment
-python -m venv venv
-source venv/bin/activate   # On Windows use `venv\Scripts\activate`
+# 2. Create and activate a virtual environment (optional but recommended)
+python -m venv .venv
+# On Windows
+.venv\Scripts\activate
+# On macOS/Linux
+source .venv/bin/activate
 
-# No external packages required; the project uses only the Python standard library.
+# 3. Install required packages
+pip install -r requirements.txt
 ```
 
----
+> **Note:** The project requires Python 3.9+.
 
-## ▶️ Usage
+---  
 
-### 1. Add a birthday
+## Usage  
+
+### 1️⃣ Initialise the database  
 
 ```bash
-python birthday_reminder.py add --name "Alice Smith" --date 1990-04-15
+python -m birthday_reminder init
 ```
 
-### 2. List upcoming birthdays
+### 2️⃣ Add a birthday  
 
 ```bash
-# Show birthdays in the next 7 days
-python birthday_reminder.py upcoming --days 7
+python -m birthday_reminder add \
+    --name "Alice Smith" \
+    --date "1990-04-15" \
+    --email "alice@example.com"
 ```
 
-### 3. Export all birthdays to CSV
+### 3️⃣ List all birthdays  
 
 ```bash
-python birthday_reminder.py export --format csv --output birthdays.csv
+python -m birthday_reminder list
 ```
 
-### 4. Help
+### 4️⃣ Run the reminder daemon  
 
 ```bash
-python birthday_reminder.py --help
+python -m birthday_reminder run
 ```
 
-*Replace `birthday_reminder.py` with the actual entry‑point script name if it differs.*
+The daemon checks the database every day at midnight (default) and sends reminders according to the configured lead time.
 
----
+### 5️⃣ Configure email (once)  
 
-## 📄 License
+Create a `config.yaml` in the project root:
 
-This project does not currently specify a license. If you plan to use or contribute to the code, please contact the repository owner for clarification or consider adding an appropriate open‑source license.
+```yaml
+smtp:
+  host: smtp.gmail.com
+  port: 587
+  username: your.email@gmail.com
+  password: your_app_password
+  use_tls: true
+reminder:
+  lead_time_days: 1
+```
+
+---  
+
+## Contributing  
+
+Contributions are welcome! Please:
+
+1. Fork the repository.  
+2. Create a feature branch (`git checkout -b feature/awesome-feature`).  
+3. Commit your changes with clear messages.  
+4. Open a Pull Request against the `main` branch.  
+
+Make sure to run the test suite before submitting:
+
+```bash
+pytest tests/
+```
+
+---  
+
+## License  
+
+This project does **not** include a license. By default, all rights are reserved to the author. If you wish to use this code in your own projects, please contact the repository owner for permission.
